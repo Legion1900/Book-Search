@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Book Search</string>
+    <string name="query_hint">Enter book or author</string>
+    <string name="button_search_content_description">Search button</string>
+</resources>
