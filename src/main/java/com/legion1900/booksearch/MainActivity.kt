@@ -4,17 +4,13 @@ import android.content.Context
 import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.AsyncTask
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
 import com.legion1900.booksearch.databinding.ActivityMainBinding
 import java.net.URL
-import kotlin.io.readText
 
 class MainActivity : AppCompatActivity() {
 
@@ -50,13 +46,12 @@ class MainActivity : AppCompatActivity() {
                 buttonSearch.visibility = View.GONE
                 etQuery.visibility = View.GONE
                 etQuery.hideKeyboard()
-                tvQueryResult.visibility = View.VISIBLE
+                svResult.visibility = View.VISIBLE
             }
         }
 
         override fun doInBackground(vararg params: URL?): String? {
             val url = params[0]
-            Log.d("URL test", url.toString())
             return url?.readText()
         }
 
