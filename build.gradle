@@ -25,6 +25,9 @@ android {
             buildConfigField 'String', "ApiKey", BookSearch_GoodreadsAppKey
         }
     }
+    dataBinding{
+        enabled = true
+    }
 }
 
 dependencies {
