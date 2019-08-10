@@ -1,68 +1,57 @@
 package com.legion1900.booksearch
 
-import android.content.Context
 import android.databinding.DataBindingUtil
-import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
+import android.support.v4.app.LoaderManager
+import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.Loader
 import android.support.v7.app.AppCompatActivity
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
+import android.util.Log
+import android.widget.Toast
 import com.legion1900.booksearch.databinding.ActivityMainBinding
-import java.net.URL
+import com.legion1900.booksearch.utilities.QueryExecutor
+import com.legion1900.booksearch.utilities.buildQuery
+import com.legion1900.booksearch.utilities.hideKeyboard
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String> {
+
+    private val LOADER_ID = 1
 
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var loaderManager: LoaderManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        loaderManager = LoaderManager.getInstance(this)
 
         binding.buttonSearch.setOnClickListener {
-            val task = ApiCallTask()
-            task.execute(buildQuery(binding.etQuery.text.toString()))
+            prepareUi()
+            loaderManager.restartLoader(LOADER_ID, null, this)
         }
     }
 
-    // TODO add querying via AsyncTaskLoader!
-
-    private fun buildQuery(query: String): URL {
-        val uri = Uri.Builder()
-            .scheme("https")
-            .authority("www.goodreads.com")
-            .appendPath("search.xml")
-            .appendQueryParameter("key", BuildConfig.ApiKey)
-            .appendQueryParameter("q", query)
-            .build()
-        return URL(uri.toString())
+    override fun onCreateLoader(p0: Int, p1: Bundle?): Loader<String> {
+        return QueryExecutor(this, buildQuery(binding.etQuery.text.toString()))
     }
 
-    private inner class ApiCallTask() : AsyncTask<URL, Unit, String?>() {
-        override fun onPreExecute() {
-            super.onPreExecute()
-            binding.run {
-                buttonSearch.visibility = View.GONE
-                etQuery.visibility = View.GONE
-                etQuery.hideKeyboard()
-                svResult.visibility = View.VISIBLE
-            }
-        }
-
-        override fun doInBackground(vararg params: URL?): String? {
-            val url = params[0]
-            return url?.readText()
-        }
-
-        override fun onPostExecute(result: String?) {
-            super.onPostExecute(result)
-            binding.tvQueryResult.text = result
+    override fun onLoadFinished(p0: Loader<String>, p1: String?) {
+        binding.run {
+            tvQueryResult.text = p1
         }
     }
 
-    private fun EditText.hideKeyboard() {
-        val manager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        manager.hideSoftInputFromWindow(windowToken, 0)
+    override fun onLoaderReset(p0: Loader<String>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    /*
+    * UI preparation before executing query
+    * */
+    private fun prepareUi() {
+        binding.run {
+            etQuery.hideKeyboard()
+        }
     }
 }
