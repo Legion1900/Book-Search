@@ -1,49 +1,39 @@
 package com.legion1900.booksearch
 
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.AsyncTaskLoader
-import android.support.v4.content.Loader
-import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.legion1900.booksearch.databinding.ActivityMainBinding
-import com.legion1900.booksearch.utilities.QueryExecutor
+import com.legion1900.booksearch.utilities.XmlViewModel
 import com.legion1900.booksearch.utilities.buildQuery
 import com.legion1900.booksearch.utilities.hideKeyboard
+import java.lang.StringBuilder
 
-class MainActivity : AppCompatActivity(), LoaderManager.LoaderCallbacks<String> {
-
-    private val LOADER_ID = 1
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var loaderManager: LoaderManager
+    private lateinit var viewModel: XmlViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        loaderManager = LoaderManager.getInstance(this)
+
+        viewModel = ViewModelProviders.of(this).get(XmlViewModel::class.java)
+        viewModel.queryResult.observe(this,
+            Observer<List<String>> {
+                val builder = StringBuilder()
+                for (res in it)
+                    builder.append(res)
+                binding.tvQueryResult.text = builder.toString()
+            })
 
         binding.buttonSearch.setOnClickListener {
             prepareUi()
-            loaderManager.restartLoader(LOADER_ID, null, this)
+            viewModel.queryNew(buildQuery(binding.etQuery.text.toString()))
         }
-    }
-
-    override fun onCreateLoader(p0: Int, p1: Bundle?): Loader<String> {
-        return QueryExecutor(this, buildQuery(binding.etQuery.text.toString()))
-    }
-
-    override fun onLoadFinished(p0: Loader<String>, p1: String?) {
-        binding.run {
-            tvQueryResult.text = p1
-        }
-    }
-
-    override fun onLoaderReset(p0: Loader<String>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     /*
