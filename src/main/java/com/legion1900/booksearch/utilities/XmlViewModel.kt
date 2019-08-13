@@ -22,6 +22,9 @@ class XmlViewModel : ViewModel() {
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
+            val parser = GoodreadsParser()
+            val search = parser.parse(result!!)
+            val show = "Results start: ${search.first}\nResults end: ${search.second}\nTotal results: ${search.third}"
             queryResult.value = listOf(result!!)
         }
     }

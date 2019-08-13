@@ -1,5 +1,6 @@
 package com.legion1900.booksearch.utilities
 
+import android.util.Log
 import android.util.Xml
 import com.legion1900.booksearch.Author
 import com.legion1900.booksearch.Book
@@ -26,10 +27,14 @@ class GoodreadsParser {
         val parser = Xml.newPullParser()
         parser.setInput(StringReader(xml))
 
-
-        while(parser.eventType != XmlPullParser.START_TAG && parser.name != "") {
+//        TODO: Rewrite while condition check, it`s going false too soon!!!
+        while(parser.eventType != XmlPullParser.START_TAG && parser.name != "search") {
             parser.nextTag()
         }
+        Log.d("Testing", "parser.eventType = ${parser.eventType}")
+        Log.d("Testing", "parser.name = ${parser.name}")
+        Log.d("Testing", "eventType check = ${parser.eventType != XmlPullParser.START_TAG}")
+        Log.d("Testing", "name check = ${parser.name != "search"}")
         return readSearch(parser)
     }
 
@@ -45,7 +50,7 @@ class GoodreadsParser {
         var start = -1
         var end = -1
         var total = -1
-        while (parser.nextTag() != XmlPullParser.END_TAG && parser.name != "query") {
+        while (parser.nextTag() != XmlPullParser.END_TAG && parser.name != "search") {
             if (parser.eventType == XmlPullParser.START_TAG) {
                 when (parser.name) {
                     resStart -> start = readNumber(parser)
