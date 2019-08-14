@@ -25,7 +25,8 @@ class XmlViewModel : ViewModel() {
             val parser = GoodreadsParser()
             val search = parser.parse(result!!)
             val show = "Results start: ${search.first}\nResults end: ${search.second}\nTotal results: ${search.third}"
-            queryResult.value = listOf(result!!)
+//            queryResult.value = listOf(result)
+            queryResult.value = listOf(show)
         }
     }
 }

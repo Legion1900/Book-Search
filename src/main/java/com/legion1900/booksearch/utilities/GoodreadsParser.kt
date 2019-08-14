@@ -27,14 +27,11 @@ class GoodreadsParser {
         val parser = Xml.newPullParser()
         parser.setInput(StringReader(xml))
 
-//        TODO: Rewrite while condition check, it`s going false too soon!!!
-        while(parser.eventType != XmlPullParser.START_TAG && parser.name != "search") {
-            parser.nextTag()
+//        TODO: Careful with this loop
+//        TODO: Use next() instead of nextTag()!!
+        while(parser.eventType != XmlPullParser.START_TAG || parser.name != "search") {
+            parser.next()
         }
-        Log.d("Testing", "parser.eventType = ${parser.eventType}")
-        Log.d("Testing", "parser.name = ${parser.name}")
-        Log.d("Testing", "eventType check = ${parser.eventType != XmlPullParser.START_TAG}")
-        Log.d("Testing", "name check = ${parser.name != "search"}")
         return readSearch(parser)
     }
 
@@ -44,13 +41,15 @@ class GoodreadsParser {
     * Note: smth gone wrong when if (-1, -1, -1) was returned
     * */
     private fun readSearch(parser: XmlPullParser): Triple<Int, Int, Int> {
+        Log.d("Testing", "Hello World!")
+
         val resStart = "results-start"
         val resEnd = "results-end"
         val totalRes = "total-results"
         var start = -1
         var end = -1
         var total = -1
-        while (parser.nextTag() != XmlPullParser.END_TAG && parser.name != "search") {
+        while (parser.next() != XmlPullParser.END_TAG || parser.name != "search") {
             if (parser.eventType == XmlPullParser.START_TAG) {
                 when (parser.name) {
                     resStart -> start = readNumber(parser)
