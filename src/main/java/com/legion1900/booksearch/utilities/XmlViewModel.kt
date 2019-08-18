@@ -1,10 +1,12 @@
 package com.legion1900.booksearch.utilities
 
 import android.os.AsyncTask
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.legion1900.booksearch.parser.GoodreadsParser
+import java.lang.StringBuilder
 import java.net.URL
-import java.util.*
 
 class XmlViewModel : ViewModel() {
 
@@ -17,16 +19,33 @@ class XmlViewModel : ViewModel() {
 
     // TODO add queryUpdate(URL) to extend list of data
 
-    private inner class QueryExecutor : AsyncTask<URL, Unit, String?>() {
-        override fun doInBackground(vararg queries: URL?): String? = queries[0]?.readText()
+    private inner class QueryExecutor : AsyncTask<URL, Unit, MutableList<String>>() {
+        override fun doInBackground(vararg queries: URL?): MutableList<String> {
+            val xml = queries[0]?.readText()
 
-        override fun onPostExecute(result: String?) {
-            super.onPostExecute(result)
             val parser = GoodreadsParser()
-            val search = parser.parse(result!!)
-            val show = "Results start: ${search.first}\nResults end: ${search.second}\nTotal results: ${search.third}"
-//            queryResult.value = listOf(result)
-            queryResult.value = listOf(show)
+            val results = parser.parse(xml!!)
+            val toPost = mutableListOf<String>()
+            val builder = StringBuilder()
+            for (work in results.works) {
+                builder.append(work.author.name)
+                builder.append("\n")
+                builder.append(work.title)
+                builder.append("\n")
+                builder.append(work.avgRating)
+                builder.append("\n")
+                toPost.add(builder.toString())
+                builder.clear()
+            }
+            return toPost
+        }
+
+        override fun onPostExecute(result: MutableList<String>) {
+            super.onPostExecute(result)
+
+            queryResult.value = result
+
+//            queryResult.value = listOf(show)
         }
     }
 }
