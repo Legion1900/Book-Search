@@ -27,13 +27,17 @@ class XmlViewModel : ViewModel() {
             val results = parser.parse(xml!!)
             val toPost = mutableListOf<String>()
             val builder = StringBuilder()
+            var cnt = 1
             for (work in results.works) {
+                builder.append("${cnt++}.\n")
                 builder.append(work.author.name)
                 builder.append("\n")
                 builder.append(work.title)
                 builder.append("\n")
                 builder.append(work.avgRating)
                 builder.append("\n")
+                builder.append("___________\n")
+
                 toPost.add(builder.toString())
                 builder.clear()
             }

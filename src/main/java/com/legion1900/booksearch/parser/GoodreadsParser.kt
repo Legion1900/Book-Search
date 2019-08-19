@@ -5,7 +5,6 @@ import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import java.io.StringReader
 import java.net.URL
-import java.util.*
 
 private const val TAG_SEARCH = "search"
 private const val TAG_RESULTS = "results"
@@ -23,68 +22,15 @@ private const val TAG_IMG = "image_url"
 class GoodreadsParser {
 
     fun parse(xml: String): Results {
-        val test = Xml.newPullParser()
-        test.setInput(StringReader("<work>\n" +
-                "<id type=\"integer\">7593882</id>\n" +
-                "<books_count type=\"integer\">17</books_count>\n" +
-                "<ratings_count type=\"integer\">926</ratings_count>\n" +
-                "<text_reviews_count type=\"integer\">123</text_reviews_count>\n" +
-                "<original_publication_year type=\"integer\">2010</original_publication_year>\n" +
-                "<original_publication_month type=\"integer\">3</original_publication_month>\n" +
-                "<original_publication_day type=\"integer\">31</original_publication_day>\n" +
-                "<average_rating>3.95</average_rating>\n" +
-                "<best_book type=\"Book\">\n" +
-                "<id type=\"integer\">11309025</id>\n" +
-                "<title>A Pleasure to Burn: Fahrenheit 451 Stories</title>\n" +
-                "<author>\n" +
-                "<id type=\"integer\">1630</id>\n" +
-                "<name>Ray Bradbury</name>\n" +
-                "</author>\n" +
-                "<image_url>\n" +
-                "https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png\n" +
-                "</image_url>\n" +
-                "<small_image_url>\n" +
-                "https://s.gr-assets.com/assets/nophoto/book/50x75-a91bf249278a81aabab721ef782c4a74.png\n" +
-                "</small_image_url>\n" +
-                "</best_book>\n" +
-                "</work>\n" +
-                "<work>\n" +
-                "<id type=\"integer\">40279</id>\n" +
-                "<books_count type=\"integer\">2</books_count>\n" +
-                "<ratings_count type=\"integer\">953</ratings_count>\n" +
-                "<text_reviews_count type=\"integer\">48</text_reviews_count>\n" +
-                "<original_publication_year type=\"integer\">2000</original_publication_year>\n" +
-                "<original_publication_month type=\"integer\">12</original_publication_month>\n" +
-                "<original_publication_day type=\"integer\" nil=\"true\"/>\n" +
-                "<average_rating>4.19</average_rating>\n" +
-                "<best_book type=\"Book\">\n" +
-                "<id type=\"integer\">40694</id>\n" +
-                "<title>Ray Bradbury's Fahrenheit 451</title>\n" +
-                "<author>\n" +
-                "<id type=\"integer\">236</id>\n" +
-                "<name>Harold Bloom</name>\n" +
-                "</author>\n" +
-                "<image_url>\n" +
-                "https://s.gr-assets.com/assets/nophoto/book/111x148-bcc042a9c91a29c1d680899eff700a03.png\n" +
-                "</image_url>\n" +
-                "<small_image_url>\n" +
-                "https://s.gr-assets.com/assets/nophoto/book/50x75-a91bf249278a81aabab721ef782c4a74.png\n" +
-                "</small_image_url>\n" +
-                "</best_book>\n" +
-                "</work>"))
-        val works = readResults(test, 2)
-        Log.d("Testing", "There is ${works.size} books")
-        return Results(works, 1, 1)
-//        val parser = Xml.newPullParser()
-//        parser.setInput(StringReader(xml))
-//
-//        skipTo(parser, TAG_SEARCH)
-//        val (start, end, total) = readQuery(parser)
-//        val perPage = start - end
-//        skipTo(parser, TAG_RESULTS)
-//        Log.d("Testing", "Before readResults call")
-//        val works = readResults(parser)
-//        return Results(works, perPage, total)
+        val parser = Xml.newPullParser()
+        parser.setInput(StringReader(xml))
+
+        skipTo(parser, TAG_SEARCH)
+        val (start, end, total) = readQuery(parser)
+        val perPage = end - start + 1
+        skipTo(parser, TAG_RESULTS)
+        val works = readResults(parser, perPage)
+        return Results(works, start, end, total)
     }
 
     /*
@@ -107,9 +53,7 @@ class GoodreadsParser {
 
     private fun readResults(parser: XmlPullParser, worksNum: Int): List<Work> {
         val works = mutableListOf<Work>()
-//        TODO: change parser.name condition check
         for (i in 0 until worksNum) {
-            if (parser.eventType == XmlPullParser.END_DOCUMENT) break
             skipTo(parser, TAG_WORK)
             works.add(readWork(parser))
         }
@@ -118,8 +62,6 @@ class GoodreadsParser {
 
     private fun readWork(parser: XmlPullParser): Work =
         parser.let {
-            Log.d("Testing", "<work> reading started")
-
             skipTo(it, TAG_PUB_YEAR)
             val pubYear = readDate(it)
             skipTo(it, TAG_PUB_MONTH)
@@ -137,7 +79,6 @@ class GoodreadsParser {
             skipTo(it, TAG_IMG)
             val imgUrl = URL(it.nextText())
 
-            Log.d("Testing", "<work> was read")
             Work(bookId, title, pubYear, pubMonth, pubDay, author, avgRating, imgUrl)
         }
 
@@ -151,23 +92,10 @@ class GoodreadsParser {
         }
 
     /*
-    * Method for moving cursor to tag with tagName name.
+    * Method for reading <results-start>, <results-end>, <total-results> tags
+    * (some of them may have no value with 'nil' attribute set to true
     * */
-    private fun skipTo(parser: XmlPullParser, tagName: String) {
-//        var a = 1
-        while (parser.eventType != XmlPullParser.START_TAG || parser.name != tagName) {
-//            val event = when (parser.eventType) {
-//                2 -> "start tag"
-//                4 -> "text"
-//                3 -> "end tag"
-//                1 -> "end document"
-//                else -> "other event"
-//            }
-//            Log.d("Testing", "skipTo loop: $event || ${parser.name}")
-//            Log.d("Testing", "In loop for ${a++} cycle")
-            parser.next()
-        }
-    }
+    private fun readDate(parser: XmlPullParser): Int? = if (parser.attributeCount == 1) readInt(parser) else null
 
     /*
     * Method for reading tags which contain only one INTEGER number.
@@ -180,8 +108,11 @@ class GoodreadsParser {
     private fun readFloat(parser: XmlPullParser) = parser.nextText().toFloat()
 
     /*
-    * Method for reading <results-start>, <results-end>, <total-results> tags
-    * (some of them may have no value with 'nil' attribute set to true
+    * Method for moving cursor to tag with tagName name.
     * */
-    private fun readDate(parser: XmlPullParser): Int? = if (parser.attributeCount == 1) readInt(parser) else null
+    private fun skipTo(parser: XmlPullParser, tagName: String) {
+        while (parser.eventType != XmlPullParser.START_TAG || parser.name != tagName) {
+            parser.next()
+        }
+    }
 }

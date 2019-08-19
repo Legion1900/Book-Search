@@ -30,4 +30,4 @@ data class Work(
 /*
 * Represent parsed <results> tag.
 * */
-data class Results(val works: List<Work>, val worksPerPage: Int, val totalWorks: Int)
+data class Results(val works: List<Work>, val startIndex: Int, val endIndex: Int, val totalWorks: Int)
