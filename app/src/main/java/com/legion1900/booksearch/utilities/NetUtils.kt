@@ -1,4 +1,4 @@
-package com.legion1900.bookserach.utilities
+package com.legion1900.booksearch.utilities
 
 import android.net.Uri
 import com.legion1900.booksearch.BuildConfig

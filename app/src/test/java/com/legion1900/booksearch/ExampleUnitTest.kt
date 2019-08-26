@@ -1,4 +1,4 @@
-package com.legion1900.bookserach
+package com.legion1900.booksearch
 
 import org.junit.Test
 

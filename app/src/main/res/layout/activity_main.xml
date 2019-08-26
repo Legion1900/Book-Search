@@ -5,7 +5,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.legion1900.bookserach.MainActivity">
+            tools:context="com.legion1900.booksearch.MainActivity">
 
         <EditText
                 android:id="@+id/et_query"

@@ -1,18 +1,18 @@
-package com.legion1900.bookserach
+package com.legion1900.booksearch
 
 import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.legion1900.booksearch.R
 import com.legion1900.booksearch.databinding.ActivityMainBinding
+import com.legion1900.booksearch.parser.Results
 
 import com.legion1900.booksearch.utilities.XmlViewModel
 import com.legion1900.booksearch.utilities.hideKeyboard
-import com.legion1900.bookserach.utilities.buildQuery
-import java.lang.StringBuilder
+import com.legion1900.booksearch.utilities.buildQuery
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,15 +26,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        //        TODO: init viewAdapter!!
+        binding.rvResult.layoutManager = LinearLayoutManager(this)
 
+//        TODO: update adapter data instead of building new adapter!!
         viewModel = ViewModelProviders.of(this).get(XmlViewModel::class.java)
         viewModel.queryResult.observe(this,
-            Observer<List<String>> {
-                val builder = StringBuilder()
-                for (res in it)
-                    builder.append(res)
-                binding.tvQueryResult.text = builder.toString()
+            Observer<Results> {
+                val adapter = BookAdapter(it.works)
+                binding.rvResult.adapter = adapter
             })
 
         binding.buttonSearch.setOnClickListener {
@@ -50,5 +49,9 @@ class MainActivity : AppCompatActivity() {
         binding.run {
             etQuery.hideKeyboard()
         }
+    }
+
+    private fun prepareAdapter() {
+
     }
 }
