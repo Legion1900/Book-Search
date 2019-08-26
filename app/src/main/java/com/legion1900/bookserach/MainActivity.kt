@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.legion1900.booksearch.R
 import com.legion1900.booksearch.databinding.ActivityMainBinding
 
@@ -19,9 +20,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: XmlViewModel
 
+    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        //        TODO: init viewAdapter!!
 
         viewModel = ViewModelProviders.of(this).get(XmlViewModel::class.java)
         viewModel.queryResult.observe(this,
