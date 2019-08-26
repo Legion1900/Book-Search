@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.legion1900.booksearch.databinding.ActivityMainBinding
 import com.legion1900.booksearch.parser.Results
+import com.legion1900.booksearch.parser.Work
 
 import com.legion1900.booksearch.utilities.XmlViewModel
 import com.legion1900.booksearch.utilities.hideKeyboard
@@ -20,20 +21,18 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: XmlViewModel
 
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewAdapter: BookAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        binding.rvResult.layoutManager = LinearLayoutManager(this)
+        initRecyclerView()
 
-//        TODO: update adapter data instead of building new adapter!!
         viewModel = ViewModelProviders.of(this).get(XmlViewModel::class.java)
         viewModel.queryResult.observe(this,
             Observer<Results> {
-                val adapter = BookAdapter(it.works)
-                binding.rvResult.adapter = adapter
+                viewAdapter.swapData(it.works)
             })
 
         binding.buttonSearch.setOnClickListener {
@@ -51,7 +50,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun prepareAdapter() {
-
+    private fun initRecyclerView() {
+        val noData = mutableListOf<Work>()
+        viewAdapter = BookAdapter(noData)
+        binding.rvResult.let {
+            it.layoutManager = LinearLayoutManager(this)
+            it.adapter = viewAdapter
+        }
     }
 }

@@ -7,7 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.legion1900.booksearch.parser.Work
 
-class BookAdapter(var dataSource: List<Work>) : RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
+class BookAdapter(val dataSource: MutableList<Work>) :
+    RecyclerView.Adapter<BookAdapter.BookViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val itemLayout = R.layout.book_item_view
@@ -25,6 +26,17 @@ class BookAdapter(var dataSource: List<Work>) : RecyclerView.Adapter<BookAdapter
             title.text = data.title
             avgRating.text = data.avgRating.toString()
         }
+    }
+
+    fun extendData(nextBooks: List<Work>) {
+        dataSource.addAll(nextBooks)
+        notifyDataSetChanged()
+    }
+
+    fun swapData(newSearch: List<Work>) {
+        dataSource.clear()
+        dataSource.addAll(newSearch)
+        notifyDataSetChanged()
     }
 
     class BookViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
