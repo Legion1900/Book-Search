@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="divider_line_color">#657287</color>
+    <color name="background_results">#F2F2F2</color>
+    <color name="default_bacground">#FAFAFA</color>
 </resources>

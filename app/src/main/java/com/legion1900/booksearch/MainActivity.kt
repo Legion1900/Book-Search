@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.legion1900.booksearch.databinding.ActivityMainBinding
 import com.legion1900.booksearch.parser.Results
 import com.legion1900.booksearch.parser.Work
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             })
 
         binding.buttonSearch.setOnClickListener {
-//            TODO: add connection check
+            //            TODO: add connection check
 //            TODO: add loading animation
             prepareUi()
             viewModel.queryNew(buildQuery(binding.etQuery.text.toString()))

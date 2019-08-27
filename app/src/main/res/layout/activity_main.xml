@@ -33,9 +33,11 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_result"
+            android:paddingStart="@dimen/rv_margin"
+            android:paddingEnd="@dimen/rv_margin"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/rv_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
