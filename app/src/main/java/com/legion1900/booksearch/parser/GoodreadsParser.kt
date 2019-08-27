@@ -77,7 +77,7 @@ class GoodreadsParser {
             skipTo(it, TAG_AUTHOR)
             val author = readAuthor(it)
             skipTo(it, TAG_IMG)
-            val imgUrl = URL(it.nextText())
+            val imgUrl = it.nextText()
 
             Work(bookId, title, pubYear, pubMonth, pubDay, author, avgRating, imgUrl)
         }

@@ -24,7 +24,7 @@ data class Work(
     val pubDay: Int?,
     val author: Author,
     val avgRating: Float,
-    val imgUrl: URL
+    val imgUrl: String
 )
 
 /*

@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity() {
             })
 
         binding.buttonSearch.setOnClickListener {
+//            TODO: add connection check
+//            TODO: add loading animation
             prepareUi()
             viewModel.queryNew(buildQuery(binding.etQuery.text.toString()))
         }
