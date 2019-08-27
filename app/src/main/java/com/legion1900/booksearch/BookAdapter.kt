@@ -30,8 +30,10 @@ class BookAdapter(val dataSource: MutableList<Work>) :
             author.text = data.author.name
             title.text = data.title
             avgRating.text = data.avgRating.toString()
-//          TODO: add placeholder and error
-            picasso.load(Uri.parse(data.imgUrl)).into(bookImg)
+            picasso.load(Uri.parse(data.imgUrl))
+                .placeholder(R.drawable.ic_image_preload_48dp)
+                .error(R.drawable.ic_image_loading_error_48dp)
+                .into(bookImg)
         }
     }
 
