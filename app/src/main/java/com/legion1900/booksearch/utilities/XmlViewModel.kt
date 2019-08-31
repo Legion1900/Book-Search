@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.legion1900.booksearch.parser.GoodreadsParser
 import com.legion1900.booksearch.parser.Results
+import java.lang.ref.WeakReference
 import java.net.URL
 
 class XmlViewModel : ViewModel() {
@@ -12,13 +13,15 @@ class XmlViewModel : ViewModel() {
     val queryResult = MutableLiveData<Results>()
 
     fun queryNew(query: URL) {
-        val executor = QueryExecutor()
+        val executor = QueryExecutor(WeakReference(queryResult))
         executor.execute(query)
     }
 
     // TODO add queryUpdate(URL) to extend list of data
 
-    private inner class QueryExecutor : AsyncTask<URL, Unit, Results>() {
+    private class QueryExecutor(val liveData: WeakReference<MutableLiveData<Results>>)
+        : AsyncTask<URL, Unit, Results>() {
+
         override fun doInBackground(vararg queries: URL?): Results {
             val xml = queries[0]?.readText()
 
@@ -29,7 +32,7 @@ class XmlViewModel : ViewModel() {
         override fun onPostExecute(result: Results) {
             super.onPostExecute(result)
 
-            queryResult.value = result
+            liveData.get()?.value = result
         }
     }
 }
