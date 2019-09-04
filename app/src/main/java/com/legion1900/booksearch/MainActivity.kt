@@ -11,6 +11,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.legion1900.booksearch.databinding.ActivityMainBinding
 import com.legion1900.booksearch.parser.Results
 import com.legion1900.booksearch.parser.Work
+import com.legion1900.booksearch.utilities.ConnectionMonitor
 
 import com.legion1900.booksearch.utilities.XmlViewModel
 import com.legion1900.booksearch.utilities.hideKeyboard
@@ -24,10 +25,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewAdapter: BookAdapter
 
+    private lateinit var connectionMonitor: ConnectionMonitor
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(binding.toolbar)
+        connectionMonitor = ConnectionMonitor(this)
 
         initRecyclerView()
 
@@ -38,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             })
 
         binding.buttonSearch.setOnClickListener {
-            //            TODO: add connection check
+//            TODO: add connection check
 //            TODO: add loading animation
             prepareUi()
             viewModel.queryNew(buildQuery(binding.etQuery.text.toString()))
@@ -46,7 +50,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     /*
-    * UI preparation before executing query
+    * UI preparation before executing query:
+    * hide keyboard;
+    * display loading animation;
     * */
     private fun prepareUi() {
         binding.run {
@@ -54,6 +60,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /*
+    * RecyclerView preparation:
+    * attach layout manager;
+    * attach adapter;
+    * */
     private fun initRecyclerView() {
         val noData = mutableListOf<Work>()
         viewAdapter = BookAdapter(noData)
