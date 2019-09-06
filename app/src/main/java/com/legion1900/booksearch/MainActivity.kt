@@ -44,10 +44,10 @@ class MainActivity : AppCompatActivity() {
     * hide keyboard;
     * display loading animation;
     * */
-    private fun prepareUi() {
-        binding.run {
-            etQuery.hideKeyboard()
-        }
+    private fun prepareUi() = with(binding) {
+        etQuery.hideKeyboard()
+        loadingBar.visibility = View.VISIBLE
+        rvResult.visibility = View.GONE
     }
 
     /*
@@ -69,6 +69,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.queryResult.observe(this,
             Observer<Results> {
                 rvAdapter.swapData(it.works)
+                with(binding) {
+                    loadingBar.visibility = View.GONE
+                    rvResult.visibility = View.VISIBLE
+                }
             })
     }
 
