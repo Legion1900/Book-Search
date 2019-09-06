@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="rv_margin">8dp</dimen>
+    <dimen name="rv_margin">12dp</dimen>
     <dimen name="card_margin">8dp</dimen>
     <dimen name="card_radius">8dp</dimen>
 </resources>

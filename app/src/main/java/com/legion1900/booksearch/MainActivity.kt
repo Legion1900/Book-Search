@@ -17,6 +17,8 @@ import com.legion1900.booksearch.utilities.XmlViewModel
 import com.legion1900.booksearch.utilities.hideKeyboard
 import com.legion1900.booksearch.utilities.buildQuery
 
+private const val MSG_NO_CONNECTION = "No connection"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -80,12 +82,12 @@ class MainActivity : AppCompatActivity() {
     * Search button click listener
     * */
     private fun onSearchButtonClick(view: View) {
-//            TODO: add loading animation
         if (connectionMonitor.isConnected) {
             prepareUi()
             viewModel.queryNew(buildQuery(binding.etQuery.text.toString()))
         } else {
-            Snackbar.make(binding.coordinator, "No connection", Snackbar.LENGTH_LONG).show()
+            binding.etQuery.hideKeyboard()
+            Snackbar.make(binding.coordinator, MSG_NO_CONNECTION, Snackbar.LENGTH_LONG).show()
         }
     }
 }

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="divider_line_color">#657287</color>
-    <color name="background_results">#F2F2F2</color>
-    <color name="default_bacground">#FAFAFA</color>
+<!--    <color name="colorPrimary">#4EA691</color>-->
+<!--    <color name="colorPrimaryDark">#3C8070</color>-->
+<!--    <color name="colorAccent">#6CE6C9</color>-->
+
+    <color name="colorPrimary">#4A9E8B</color>
+    <color name="colorPrimaryDark">#3E8574</color>
+    <color name="colorAccent">#6CE6C9</color>
+
+    <!-- yellow -->
+<!--    <color name="colorPrimary">#A89F34</color>-->
+<!--    <color name="colorPrimaryDark">#807828</color>-->
+<!--    <color name="colorAccent">#FFF050</color>-->
 </resources>
