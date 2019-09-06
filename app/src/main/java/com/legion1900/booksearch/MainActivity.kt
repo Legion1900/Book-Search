@@ -2,12 +2,11 @@ package com.legion1900.booksearch
 
 import androidx.databinding.DataBindingUtil
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.legion1900.booksearch.databinding.ActivityMainBinding
 import com.legion1900.booksearch.parser.Results
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: XmlViewModel
 
-    private lateinit var viewAdapter: BookAdapter
+    private lateinit var rvAdapter: BookAdapter
 
     private lateinit var connectionMonitor: ConnectionMonitor
 
@@ -35,23 +34,9 @@ class MainActivity : AppCompatActivity() {
         connectionMonitor = ConnectionMonitor(this)
 
         initRecyclerView()
+        initViewModel()
 
-        viewModel = ViewModelProviders.of(this).get(XmlViewModel::class.java)
-        viewModel.queryResult.observe(this,
-            Observer<Results> {
-                viewAdapter.swapData(it.works)
-            })
-
-        binding.buttonSearch.setOnClickListener {
-            //            TODO: add connection check
-//            TODO: add loading animation
-            if (connectionMonitor.isConnected) {
-                prepareUi()
-                viewModel.queryNew(buildQuery(binding.etQuery.text.toString()))
-            } else {
-                Snackbar.make(binding.coordinator, "No connection", Snackbar.LENGTH_LONG).show()
-            }
-        }
+        binding.buttonSearch.setOnClickListener(::onSearchButtonClick)
     }
 
     /*
@@ -72,10 +57,31 @@ class MainActivity : AppCompatActivity() {
     * */
     private fun initRecyclerView() {
         val noData = mutableListOf<Work>()
-        viewAdapter = BookAdapter(noData)
+        rvAdapter = BookAdapter(noData)
         binding.rvResult.let {
             it.layoutManager = LinearLayoutManager(this)
-            it.adapter = viewAdapter
+            it.adapter = rvAdapter
+        }
+    }
+
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this).get(XmlViewModel::class.java)
+        viewModel.queryResult.observe(this,
+            Observer<Results> {
+                rvAdapter.swapData(it.works)
+            })
+    }
+
+    /*
+    * Search button click listener
+    * */
+    private fun onSearchButtonClick(view: View) {
+//            TODO: add loading animation
+        if (connectionMonitor.isConnected) {
+            prepareUi()
+            viewModel.queryNew(buildQuery(binding.etQuery.text.toString()))
+        } else {
+            Snackbar.make(binding.coordinator, "No connection", Snackbar.LENGTH_LONG).show()
         }
     }
 }

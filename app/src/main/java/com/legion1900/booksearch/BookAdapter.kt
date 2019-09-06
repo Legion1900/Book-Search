@@ -37,6 +37,8 @@ class BookAdapter(val dataSource: MutableList<Work>) :
         }
     }
 
+
+    // TODO: read about different notify...()!
     fun extendData(nextBooks: List<Work>) {
         dataSource.addAll(nextBooks)
         notifyDataSetChanged()
