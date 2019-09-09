@@ -77,6 +77,8 @@
                     app:layout_constraintTop_toBottomOf="@id/et_query"
                     />
 
+                <!-- TODO: Let's make space behind cards a little bit more gray -->
+
                 <ProgressBar
                     android:id="@+id/loading_bar"
                     android:layout_width="50dp"
