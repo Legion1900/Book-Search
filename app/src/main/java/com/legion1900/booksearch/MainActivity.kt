@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var rvAdapter: BookAdapter
 
+    private lateinit var rvLayoutManager: LinearLayoutManager
+
     private lateinit var connectionMonitor: ConnectionMonitor
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,8 +62,9 @@ class MainActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         val noData = mutableListOf<Work>()
         rvAdapter = BookAdapter(noData)
+        rvLayoutManager = LinearLayoutManager(this)
         binding.rvResult.let {
-            it.layoutManager = LinearLayoutManager(this)
+            it.layoutManager = rvLayoutManager
             it.adapter = rvAdapter
         }
     }
@@ -85,6 +88,7 @@ class MainActivity : AppCompatActivity() {
         if (connectionMonitor.isConnected) {
             prepareUi()
             viewModel.queryNew(buildQuery(binding.etQuery.text.toString()))
+            rvLayoutManager.scrollToPosition(0)
         } else {
             binding.etQuery.hideKeyboard()
             Snackbar.make(binding.coordinator, MSG_NO_CONNECTION, Snackbar.LENGTH_LONG).show()
