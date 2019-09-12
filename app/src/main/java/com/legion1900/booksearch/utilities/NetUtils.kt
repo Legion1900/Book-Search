@@ -1,6 +1,7 @@
 package com.legion1900.booksearch.utilities
 
-import android.net.Uri
+import android.content.Context
+import android.net.*
 import com.legion1900.booksearch.BuildConfig
 import java.net.URL
 
@@ -28,4 +29,28 @@ fun buildQuery(
         .appendQueryParameter(PARAM_PAGE, page.toString())
         .build()
     return URL(uri.toString())
+}
+
+class ConnectionMonitor(context: Context) : ConnectivityManager.NetworkCallback() {
+
+    init {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val request = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+        cm.registerNetworkCallback(request, this)
+    }
+
+    var isConnected: Boolean = false
+        private set
+
+    override fun onAvailable(network: Network) {
+        super.onAvailable(network)
+        isConnected = true
+    }
+
+    override fun onLost(network: Network) {
+        super.onLost(network)
+        isConnected = false
+    }
 }

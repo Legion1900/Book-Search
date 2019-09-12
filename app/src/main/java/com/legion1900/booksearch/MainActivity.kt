@@ -9,11 +9,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.legion1900.booksearch.databinding.ActivityMainBinding
+import com.legion1900.booksearch.paging.BookAdapter
 import com.legion1900.booksearch.parser.Results
 import com.legion1900.booksearch.parser.Work
 import com.legion1900.booksearch.utilities.ConnectionMonitor
 
-import com.legion1900.booksearch.utilities.XmlViewModel
+import com.legion1900.booksearch.viewmodels.SearchViewModel
 import com.legion1900.booksearch.utilities.hideKeyboard
 import com.legion1900.booksearch.utilities.buildQuery
 
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var viewModel: XmlViewModel
+    private lateinit var viewModel: SearchViewModel
 
     private lateinit var rvAdapter: BookAdapter
 
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(XmlViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
         viewModel.queryResult.observe(this,
             Observer<Results> {
                 rvAdapter.swapData(it.works)

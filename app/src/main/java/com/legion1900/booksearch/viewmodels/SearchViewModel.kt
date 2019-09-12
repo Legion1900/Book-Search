@@ -1,4 +1,4 @@
-package com.legion1900.booksearch.utilities
+package com.legion1900.booksearch.viewmodels
 
 import android.os.AsyncTask
 import androidx.lifecycle.MutableLiveData
@@ -8,12 +8,14 @@ import com.legion1900.booksearch.parser.Results
 import java.lang.ref.WeakReference
 import java.net.URL
 
-class XmlViewModel : ViewModel() {
+class SearchViewModel : ViewModel() {
 
     val queryResult = MutableLiveData<Results>()
 
     fun queryNew(query: URL) {
-        val executor = QueryExecutor(WeakReference(queryResult))
+        val executor = QueryExecutor(
+            WeakReference(queryResult)
+        )
         executor.execute(query)
     }
 

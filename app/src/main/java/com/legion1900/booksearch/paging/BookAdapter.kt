@@ -1,4 +1,4 @@
-package com.legion1900.booksearch
+package com.legion1900.booksearch.paging
 
 import android.net.Uri
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.legion1900.booksearch.R
 import com.legion1900.booksearch.parser.Work
 import com.squareup.picasso.Picasso
 
