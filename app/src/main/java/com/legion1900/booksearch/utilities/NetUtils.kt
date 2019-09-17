@@ -5,12 +5,12 @@ import android.net.*
 import com.legion1900.booksearch.BuildConfig
 import java.net.URL
 
-private val SCHEME = "https"
-private val AUTHORITY = "www.goodreads.com"
-private val PATH = "search.xml"
-private val PARAM_Q = "q"
-private val PARAM_KEY = "key"
-private val PARAM_PAGE = "p"
+private const val SCHEME = "https"
+private const val AUTHORITY = "www.goodreads.com"
+private const val PATH = "search.xml"
+private const val PARAM_Q = "q"
+private const val PARAM_KEY = "key"
+private const val PARAM_PAGE = "page"
 
 
 fun buildQuery(
@@ -18,7 +18,7 @@ fun buildQuery(
     scheme: String = SCHEME,
     authority: String = AUTHORITY,
     path: String = PATH,
-    page: Int = 0
+    page: Int = 1
     ): URL {
     val uri = Uri.Builder()
         .scheme(scheme)
