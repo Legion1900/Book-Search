@@ -14,7 +14,7 @@ private const val PARAM_PAGE = "page"
 
 
 fun buildQuery(
-    query: String,
+    searchQuery: String,
     scheme: String = SCHEME,
     authority: String = AUTHORITY,
     path: String = PATH,
@@ -25,10 +25,17 @@ fun buildQuery(
         .authority(authority)
         .appendPath(path)
         .appendQueryParameter(PARAM_KEY, BuildConfig.apiKey)
-        .appendQueryParameter(PARAM_Q, query)
+        .appendQueryParameter(PARAM_Q, searchQuery)
         .appendQueryParameter(PARAM_PAGE, page.toString())
         .build()
     return URL(uri.toString())
+}
+
+fun nextPageQuery(currPage: URL, nextPage: Int): URL {
+    val urlQuery = currPage.query
+    val start = urlQuery.indexOf(PARAM_Q)
+    val end = urlQuery.indexOf('&', start) - 1
+    return buildQuery(urlQuery.substring(start..end), page = nextPage)
 }
 
 class ConnectionMonitor(context: Context) : ConnectivityManager.NetworkCallback() {

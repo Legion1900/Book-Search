@@ -12,6 +12,7 @@ class SearchViewModel : ViewModel() {
 
     val queryResult = MutableLiveData<Results>()
 
+    // TODO: new DataSource should be queried here
     fun queryNew(query: URL) {
         val executor = QueryExecutor(
             WeakReference(queryResult)
@@ -19,7 +20,9 @@ class SearchViewModel : ViewModel() {
         executor.execute(query)
     }
 
-    // TODO add queryUpdate(URL) to extend list of data
+    // TODO: add queryUpdate(URL) to extend list of data
+    // TODO: move all download & parsing logic to my DataSource
+    // TODO: get rid of AsyncTask in favour of coroutines
 
     private class QueryExecutor(val liveData: WeakReference<MutableLiveData<Results>>)
         : AsyncTask<URL, Unit, Results>() {

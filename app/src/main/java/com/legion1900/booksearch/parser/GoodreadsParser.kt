@@ -95,7 +95,8 @@ class GoodreadsParser {
     * Method for reading <results-start>, <results-end>, <total-results> tags
     * (some of them may have no value with 'nil' attribute set to true
     * */
-    private fun readDate(parser: XmlPullParser): Int? = if (parser.attributeCount == 1) readInt(parser) else null
+    private fun readDate(parser: XmlPullParser): Int? =
+        if (parser.attributeCount == 1) readInt(parser) else null
 
     /*
     * Method for reading tags which contain only one INTEGER number.
