@@ -5,7 +5,6 @@ import com.legion1900.booksearch.parser.GoodreadsParser
 import com.legion1900.booksearch.parser.Results
 import com.legion1900.booksearch.parser.Work
 import com.legion1900.booksearch.utilities.buildQuery
-import com.legion1900.booksearch.utilities.nextPageQuery
 import java.net.URL
 
 private const val BOOKS_PER_PAGE = 20
