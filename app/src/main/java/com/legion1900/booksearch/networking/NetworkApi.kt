@@ -19,8 +19,8 @@ class NetworkApi(private val connectionMonitor: ConnectionMonitor) {
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
 
-    @Throws(IOException::class, UnknownHostException::class)
-    fun executeSearch(query: String, page: Int = 0): String {
+    @Throws(UnknownHostException::class)
+    suspend fun executeSearch(query: String, page: Int = 0): String {
         if (!connectionMonitor.isConnected) throw UnknownHostException("No connection")
         val service = client.create(GoodreadsSearchService::class.java)
         val param = mapOf(
@@ -28,8 +28,6 @@ class NetworkApi(private val connectionMonitor: ConnectionMonitor) {
             PARAM_Q to query,
             PARAM_PAGE to page.toString()
         )
-        val response = service.getXmlResponse(param).execute()
-        return if (response.isSuccessful) response.body()!!
-        else throw IOException("Problems occurred")
+        return service.getXmlResponse(param)
     }
 }

@@ -8,5 +8,5 @@ private const val RELATIVE_PATH = "search.xml"
 
 interface GoodreadsSearchService {
     @GET(RELATIVE_PATH)
-    fun getXmlResponse(@QueryMap query: Map<String, String>): Call<String>
+    suspend fun getXmlResponse(@QueryMap query: Map<String, String>): String
 }

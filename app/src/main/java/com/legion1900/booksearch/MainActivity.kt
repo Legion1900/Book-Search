@@ -16,14 +16,14 @@ import com.legion1900.booksearch.utilities.ConnectionMonitor
 
 import com.legion1900.booksearch.viewmodels.SearchViewModel
 import com.legion1900.booksearch.utilities.hideKeyboard
-import com.legion1900.booksearch.utilities.buildQuery
 import com.legion1900.booksearch.viewmodels.SearchViewModelFactory
-import java.io.IOException
-import java.net.UnknownHostException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 
 private const val MSG_NO_CONNECTION = "No connection"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -45,6 +45,11 @@ class MainActivity : AppCompatActivity() {
         initViewModel()
 
         binding.buttonSearch.setOnClickListener(::onSearchButtonClick)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cancel()
     }
 
     /*
@@ -74,7 +79,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, SearchViewModelFactory(connectionMonitor))
+        viewModel = ViewModelProviders
+            .of(this, SearchViewModelFactory(connectionMonitor, this, ::onNoInternet))
             .get(SearchViewModel::class.java)
         viewModel.queryResult.observe(this,
             Observer<Results> {
@@ -90,20 +96,12 @@ class MainActivity : AppCompatActivity() {
     * Search button click listener
     * */
     private fun onSearchButtonClick(view: View) {
-        try {
-            prepareUi()
-            viewModel.queryNew(binding.etQuery.text.toString())
-            rvLayoutManager.scrollToPosition(0)
-        }
-        catch (e: UnknownHostException) {
-            onNoInternet()
-        }
-        catch (e: IOException) {
-            onNoInternet()
-        }
+        prepareUi()
+        viewModel.queryNew(binding.etQuery.text.toString())
+        rvLayoutManager.scrollToPosition(0)
     }
 
     private fun onNoInternet() {
-        Snackbar.make(binding.coordinator, MSG_NO_CONNECTION, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.coordinator, MSG_NO_CONNECTION, Snackbar.LENGTH_LONG).show()
     }
 }
