@@ -17,6 +17,9 @@ import com.legion1900.booksearch.utilities.ConnectionMonitor
 import com.legion1900.booksearch.viewmodels.SearchViewModel
 import com.legion1900.booksearch.utilities.hideKeyboard
 import com.legion1900.booksearch.utilities.buildQuery
+import com.legion1900.booksearch.viewmodels.SearchViewModelFactory
+import java.io.IOException
+import java.net.UnknownHostException
 
 private const val MSG_NO_CONNECTION = "No connection"
 
@@ -71,7 +74,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, SearchViewModelFactory(connectionMonitor))
+            .get(SearchViewModel::class.java)
         viewModel.queryResult.observe(this,
             Observer<Results> {
                 rvAdapter.swapData(it.works)
@@ -86,13 +90,20 @@ class MainActivity : AppCompatActivity() {
     * Search button click listener
     * */
     private fun onSearchButtonClick(view: View) {
-        if (connectionMonitor.isConnected) {
+        try {
             prepareUi()
-            viewModel.queryNew(buildQuery(binding.etQuery.text.toString()))
+            viewModel.queryNew(binding.etQuery.text.toString())
             rvLayoutManager.scrollToPosition(0)
-        } else {
-            binding.etQuery.hideKeyboard()
-            Snackbar.make(binding.coordinator, MSG_NO_CONNECTION, Snackbar.LENGTH_LONG).show()
         }
+        catch (e: UnknownHostException) {
+            onNoInternet()
+        }
+        catch (e: IOException) {
+            onNoInternet()
+        }
+    }
+
+    private fun onNoInternet() {
+        Snackbar.make(binding.coordinator, MSG_NO_CONNECTION, Snackbar.LENGTH_SHORT).show()
     }
 }
