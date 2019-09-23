@@ -13,15 +13,13 @@ private const val PARAM_Q = "q"
 private const val PARAM_KEY = "key"
 private const val PARAM_PAGE = "page"
 
-class NetworkApi(private val connectionMonitor: ConnectionMonitor) {
+class NetworkApi {
     private val client = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
 
-    @Throws(UnknownHostException::class)
     suspend fun executeSearch(query: String, page: Int = 0): String {
-        if (!connectionMonitor.isConnected) throw UnknownHostException("No connection")
         val service = client.create(GoodreadsSearchService::class.java)
         val param = mapOf(
             PARAM_KEY to BuildConfig.apiKey,

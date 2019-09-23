@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private fun initViewModel() {
         viewModel = ViewModelProviders
-            .of(this, SearchViewModelFactory(connectionMonitor, this, ::onNoInternet))
+            .of(this, SearchViewModelFactory(this))
             .get(SearchViewModel::class.java)
         viewModel.queryResult.observe(this,
             Observer<Results> {
@@ -96,12 +96,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope() {
     * Search button click listener
     * */
     private fun onSearchButtonClick(view: View) {
+        if (!connectionMonitor.isConnected) {
+            Snackbar.make(binding.coordinator, MSG_NO_CONNECTION, Snackbar.LENGTH_LONG).show()
+            return
+        }
         prepareUi()
         viewModel.queryNew(binding.etQuery.text.toString())
         rvLayoutManager.scrollToPosition(0)
-    }
-
-    private fun onNoInternet() {
-        Snackbar.make(binding.coordinator, MSG_NO_CONNECTION, Snackbar.LENGTH_LONG).show()
     }
 }
